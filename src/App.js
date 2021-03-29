@@ -1,30 +1,38 @@
 import './App.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState } from 'react';
-
+import { addUser, removeUser } from './actions/index';
 function App() {
 
-  const [title, setTitle] = useState();
-  const state = useSelector(state => state);
+  const [username, setUsername] = useState();
+  const [address, setAddress] = useState();
+  const [todo, setTodo] = useState();
+  const usersState = useSelector(state => state.users);
+  const todosState = useSelector(state => state.todos);
+  console.log(todosState);
   const dispatch = useDispatch();
   return (
     <div className="App">
      
      <div className="">
-       <input type="text" className="" value={title} onChange={(e) => setTitle(e.target.value)}  placeholder="Enter Todo" />
-       <button onClick={() =>  dispatch({ type:"ADD_TODO", payload:{title} })}>Save</button>
+       <input type="text" className="" value={username} onChange={(e) => setUsername(e.target.value)}  placeholder="Enter username" />
+       <input type="text" className="" value={address} onChange={(e) => setAddress(e.target.value)}  placeholder="Enter address" />
+       <button onClick={() =>  dispatch(addUser({username,address}))}>Save</button>
      </div>
      {
-       state.map((item) => {
+       usersState.map((item) => {
          return <div key={item.id}>
-          <div><span className={`${item.completed? "line": ""}`}>{item.title}</span> <button onClick={() => dispatch({ type:"REMOVE_TODO", payload:{ id:item.id }})}>Remove</button>
-          <button onClick={() => setTitle(item.title)}>Select item</button>
-          <button onClick={() => dispatch({ type: "UPDATE_TODO", payload: {id: item.id, title: title}})}>update</button>
-          <button onClick={() => dispatch({ type: "COMPLETED_TODO", payload: {id: item.id, completed: item.completed}})}>completed</button>
-          </div>
+              <div>{item.username} {item.address} <button onClick={() => dispatch(removeUser(item.id))}>Remove</button></div>
          </div>
        })
      }
+
+
+     <div className="">
+       <input type="text" value={todo} onChange={(e) => setTodo(e.target.value)} placeholder="Enter todo" />
+       <button onClick={() => dispatch({type: "ADD_TODO", payload:{todo}})}>Add todo</button>
+     </div>
+
     </div>
   );
 }
